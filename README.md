@@ -1,0 +1,1 @@
+# nitropay-sponsor-php
