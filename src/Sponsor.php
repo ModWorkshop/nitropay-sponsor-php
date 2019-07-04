@@ -2,9 +2,9 @@
 namespace NitroPay;
 
 use NitroPay\Sponsor\CoreException;
-use ReallySimpleJWT\Build;
-use ReallySimpleJWT\Validate;
-use ReallySimpleJWT\Encode;
+use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Hmac\Sha512;
 
 class Sponsor
 {
@@ -19,16 +19,14 @@ class Sponsor
     }
 
     public function sign($siteId, $userId) {
-        $build = new Build('JWT', new Validate(), new Encode());
+        $signer = new Sha512();
+        $time = time();
 
-        $token = $build->setContentType('JWT')
-            ->setHeaderClaim('alg', 'HS512')
-            ->setHeaderClaim('typ', 'JWT')
-            ->setSecret($this->privateKey)
-            ->setIssuer((string) $siteId)
-            ->setSubject((string) $userId)
-            ->setIssuedAt(time())
-            ->build();
+        $token = (new Builder())->issuedBy((string) $siteId)
+                                ->setSubject((string) $userId)
+                                ->issuedAt($time)
+                                ->canOnlyBeUsedAfter($time)
+                                ->getToken($signer, new Key($this->privateKey));
 
         return $token;
     }
