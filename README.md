@@ -19,4 +19,4 @@ $sponsor = new NitroPay\Sponsor('YOUR_PRIVATE_KEY');
 $token = $sponsor->sign(109, 39281); // in this example, site ID = 109, user ID = 39281
 ```
 
-Follow the instructions in the (sponsor documentation)[https://docs.nitropay.com/sponsor] for what to do with the token from there.
+Follow the instructions in the [sponsor documentation](https://docs.nitropay.com/sponsor) for what to do with the token from there.
