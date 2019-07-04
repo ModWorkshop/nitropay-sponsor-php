@@ -5,5 +5,10 @@
   "require": {
     "php": ">=7.1.0",
     "rbdwllr/reallysimplejwt": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "NitroPay\\": "src/"
+    }
   }
 }

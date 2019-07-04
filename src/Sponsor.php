@@ -1,7 +1,7 @@
 <?php
-namespace NitroPay\Sponsor\SDK;
+namespace NitroPay;
 
-use NitroPay\Sponsor\SDK\CoreException;
+use NitroPay\Sponsor\CoreException;
 use ReallySimpleJWT\Build;
 use ReallySimpleJWT\Validate;
 use ReallySimpleJWT\Encode;
