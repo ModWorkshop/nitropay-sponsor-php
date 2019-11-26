@@ -52,6 +52,11 @@ class Sponsor
                                 ->withClaim('avatar', $this->avatar)
                                 ->getToken($signer, new Key($this->privateKey));
 
+        // reset
+        $this->displayName = '';
+        $this->email = '';
+        $this->avatar = '';
+        
         return $token;
     }
 }
