@@ -15,14 +15,14 @@ You can then sign tokens for your users like so:
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-$sponsor = new Sponsor\Token('YOUR_PRIVATE_KEY');
+$token = new Sponsor\Token('YOUR_PRIVATE_KEY');
 
 $tokenString = $token->sign([
     'siteId' => '109', // required
     'userId' => '39281', // required
     'email '=> 'example@example.com', // optional
     'avatar' => 'https://s.gravatar.com/avatar/0d3964876826ac9554d88d5a51ea87a2?s=80', // optional
-    'name' => 'John Doe', => // optional
+    'name' => 'John Doe', // optional
 ]);
 ```
 
