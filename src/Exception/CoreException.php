@@ -1,5 +1,5 @@
 <?php
-namespace Sponsor\Exception;
+namespace NitroPaySponsor\Exception;
 
 class CoreException extends \Exception
 {

@@ -3,16 +3,16 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
 use PHPUnit\Framework\TestCase;
-use Sponsor\Exception\CoreException;
-use Sponsor\Token;
+use NitroPaySponsor\Exception\CoreException;
+use NitroPaySponsor\Signer;
 
-final class SponsorTest extends TestCase
+final class NitroPaySignerTest extends TestCase
 {
     public function test(): void
     {
         $this->assertInstanceOf(
-            Token::class,
-            new Token('foobar')
+            Signer::class,
+            new Signer('foobar')
         );
     }
 
@@ -20,15 +20,15 @@ final class SponsorTest extends TestCase
     {
         $this->expectException(CoreException::class);
 
-        $token = new Token('foobar');
-        $token->sign([]);
+        $signer = new Signer('foobar');
+        $signer->sign([]);
     }
 
     public function testSignMissingUserIdThrowsException()
     {
         $this->expectException(CoreException::class);
 
-        $token = new Token('foobar');
-        $token->sign(['siteId' => '1']);
+        $signer = new Signer('foobar');
+        $signer->sign(['siteId' => '1']);
     }
 }

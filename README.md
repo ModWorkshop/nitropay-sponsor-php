@@ -15,9 +15,9 @@ You can then sign tokens for your users like so:
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-$token = new Sponsor\Token('YOUR_PRIVATE_KEY');
+$signer = new NitroPaySponsor\Token('YOUR_PRIVATE_KEY');
 
-$tokenString = $token->sign([
+$token = $signer->sign([
     'siteId' => '109', // required
     'userId' => '39281', // required
     'email '=> 'example@example.com', // optional
@@ -27,3 +27,5 @@ $tokenString = $token->sign([
 ```
 
 Follow the instructions in the [sponsor documentation](https://docs.nitropay.com/sponsor) for what to do with the token from there.
+
+You can use `$signer->getUserSubscription($userID)` to look up subscription info for a user.

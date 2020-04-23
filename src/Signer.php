@@ -1,25 +1,25 @@
 <?php
-namespace Sponsor;
+namespace NitroPaySponsor;
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
-use Sponsor\Exception\CoreException;
+use NitroPaySponsor\Exception\CoreException;
 
-class Token
+class Signer
 {
     private $bldr;
-    private $key;
+    private $privateKey;
     private $signer;
 
-    public function __construct(string $key)
+    public function __construct(string $privateKey)
     {
-        if (!$key) {
+        if (!$privateKey) {
             throw new CoreException('Missing private key');
         }
 
         $this->bldr = new Builder();
-        $this->key = new Key($key);
+        $this->privateKey = new Key($privateKey);
         $this->signer = new Sha512();
     }
 
@@ -46,6 +46,28 @@ class Token
             $token = $token->withClaim($claim, $value);
         }
 
-        return $token->getToken($this->signer, $this->key);
+        return $token->getToken($this->signer, $this->privateKey);
+    }
+
+    public function getUserSubscription($userId)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: {$this->privateKey->getContent()}"
+        ]);
+        curl_setopt($ch, CURLOPT_URL, "https://sponsor-api.nitropay.com/v1/users/{$userId}/subscription");
+
+        $result = curl_exec($ch);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+        
+        if (!$result) {
+            return false;
+        } else {
+            return json_decode($result);
+        }
     }
 }
