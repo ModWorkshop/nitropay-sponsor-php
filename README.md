@@ -15,7 +15,7 @@ You can then sign tokens for your users like so:
 ```php
 require __DIR__ . '/vendor/autoload.php';
 
-$signer = new NitroPaySponsor\Token('YOUR_PRIVATE_KEY');
+$signer = new NitroPaySponsor\Signer('YOUR_PRIVATE_KEY');
 
 $token = $signer->sign([
     'siteId' => '109', // required
