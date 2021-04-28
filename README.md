@@ -26,6 +26,6 @@ $token = $signer->sign([
 ]);
 ```
 
-Follow the instructions in the [sponsor documentation](https://docs.nitropay.com/sponsor) for what to do with the token from there.
+Follow the instructions in the [sponsor documentation](https://docs.nitropay.com/en/collections/2098552-sponsor) for what to do with the token from there.
 
 You can use `$signer->getUserSubscription($userID)` to look up subscription info for a user.
