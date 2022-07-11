@@ -1,16 +1,19 @@
 <?php
 namespace NitroPaySponsor;
 
-use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use NitroPaySponsor\Exception\CoreException;
 
 class Signer
 {
-    private $bldr;
-    private $privateKey;
-    private $signer;
+
+    /**
+     *
+     * @var \Lcobucci\JWT\Configuration
+     */
+    private $signerConfig;
 
     public function __construct(string $privateKey)
     {
@@ -18,9 +21,10 @@ class Signer
             throw new CoreException('Missing private key');
         }
 
-        $this->bldr = new Builder();
-        $this->privateKey = new Key($privateKey);
-        $this->signer = new Sha512();
+        $this->signerConfig = Configuration::forSymmetricSigner(
+            new Sha512(),
+            InMemory::plainText($privateKey)
+        );
     }
 
     public function sign($userinfo)
@@ -33,20 +37,20 @@ class Signer
             throw new CoreException('userId is required');
         }
 
-        $time = time();
-
-        $token = $this->bldr
+        $now = new \DateTimeImmutable();
+        $token = $this->signerConfig->builder()
             ->issuedBy((string) $userinfo['siteId'])
-            ->setSubject((string) $userinfo['userId'])
-            ->issuedAt($time)
-            ->canOnlyBeUsedAfter($time);
+            ->issuedAt($now)
+            ->canOnlyBeUsedAfter($now->modify('+1 minute'));
 
         foreach (['name', 'email', 'avatar'] as $claim) {
             $value = array_key_exists($claim, $userinfo) ? $userinfo[$claim] : '';
             $token = $token->withClaim($claim, $value);
         }
 
-        return $token->getToken($this->signer, $this->privateKey);
+        $plainToken = $token->getToken($this->signerConfig->signer(), $this->signerConfig->signingKey());
+
+        return $plainToken->toString();
     }
 
     public function getUserSubscription($userId)
@@ -55,7 +59,7 @@ class Signer
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Authorization: {$this->privateKey->getContent()}"
+            "Authorization: {$this->signerConfig->signingKey()->contents()}"
         ]);
         curl_setopt($ch, CURLOPT_URL, "https://sponsor-api.nitropay.com/v1/users/{$userId}/subscription");
 
@@ -63,7 +67,7 @@ class Signer
         $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         curl_close($ch);
-        
+
         if (!$result) {
             return false;
         } else {
