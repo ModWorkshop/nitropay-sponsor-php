@@ -38,10 +38,11 @@ class Signer
         }
 
         $now = new \DateTimeImmutable();
-        $token = $this->signerConfig->builder()
+        $token = $this->signerConfig->builder(new NitropayClaimsFormatter())
             ->issuedBy((string) $userinfo['siteId'])
+            ->relatedTo((string) $userinfo['userId'])
             ->issuedAt($now)
-            ->canOnlyBeUsedAfter($now->modify('+1 minute'));
+            ->canOnlyBeUsedAfter($now);
 
         foreach (['name', 'email', 'avatar'] as $claim) {
             $value = array_key_exists($claim, $userinfo) ? $userinfo[$claim] : '';
