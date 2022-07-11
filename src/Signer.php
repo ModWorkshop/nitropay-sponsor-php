@@ -40,7 +40,6 @@ class Signer
         $now = new \DateTimeImmutable();
         $token = $this->signerConfig->builder()
             ->issuedBy((string) $userinfo['siteId'])
-            ->withClaim('userId',  (string) $userinfo['userId'])
             ->issuedAt($now)
             ->canOnlyBeUsedAfter($now->modify('+1 minute'));
 
