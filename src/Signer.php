@@ -2,7 +2,7 @@
 namespace NitroPaySponsor;
 
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Hmac\UnsafeSha512;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use NitroPaySponsor\Exception\CoreException;
 
@@ -22,7 +22,7 @@ class Signer
         }
 
         $this->signerConfig = Configuration::forSymmetricSigner(
-            new Sha512(),
+            new UnsafeSha512(),
             InMemory::plainText($privateKey)
         );
     }
