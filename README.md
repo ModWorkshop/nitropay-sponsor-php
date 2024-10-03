@@ -1,4 +1,4 @@
-# NitroPay Sponsor Library for PHP >= 7.1
+# NitroPay Sponsor Library for PHP >= 8.1
 
 ## Description
 
